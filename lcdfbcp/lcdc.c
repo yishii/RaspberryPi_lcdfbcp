@@ -27,13 +27,6 @@ int main(int argc,char** argv)
 
   FBCP_process(fbcp_callback,160,128);
 
-  //
-  while(1){
-    LCD_fillColor(lcd_fd,LCD_colorConvert(255,255,255));
-    usleep(1000*100);
-    LCD_fillColor(lcd_fd,LCD_colorConvert(0,0,0));
-    usleep(1000*100);
-  }
   close(lcd_fd);
 }
 
