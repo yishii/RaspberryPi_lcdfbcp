@@ -17,4 +17,16 @@ Author : Yasuhiro ISHII
 
 lf::respawn:/usr/bin/lcdfbcp
 
+
+2. 解像度の変更方法
+
+デフォルトでは、LCD向けの縮小率の関係で文字が小さすぎて読めません。
+/etc/config.txt内の以下の記述を追加すれば解像度を変更できます。
+
+framebuffer_width=XXX
+framebuffer_height=YYY
+
+LCDは160×120ですので、それぞれ2倍にした320×240であれば、可読性は
+確保できるかと思います。(その場合、XXXは320、YYYは240です)
+
 以上です。
