@@ -1,0 +1,20 @@
+RaspberryPi_lcdfbcp
+===================
+Raspberry Piにダイレクトに接続したLCDにビデオバッファをコピーするソフトウェア
+Author : Yasuhiro ISHII
+
+1. インストール方法
+
+1) Raspbianを書き込んだSDカードを用意する
+2) SPIシリアルが使用できるようにする
+   ご参考サイト : http://mknod.jp/?p=391
+3) $ cd lcdfbcp
+4) $ make
+5) $ sudo make install
+   (上記操作により、lcdfbcpプロセスが/usr/bin以下にインストールされます)
+6) もし、Linux起動時に自動的にlcdfbcpを起動したい場合には、/etc/inittab
+   のファイルに以下を追加して下さい(ファイルの先頭あたりに追加する事をおすすめします)
+
+lf::respawn:/usr/bin/lcdfbcp
+
+以上です。
