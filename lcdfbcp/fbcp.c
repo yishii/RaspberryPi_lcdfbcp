@@ -13,12 +13,12 @@ int FBCP_process(void(*cb_func)(unsigned char* buff),int screen_width,int screen
     uint32_t image_prt;
     VC_RECT_T rect1;
     int ret;
-    char *fbp;
+    unsigned char *fbp;
 
     struct fb_var_screeninfo vinfo;
     struct fb_fix_screeninfo finfo;
 
-    fbp = malloc(screen_width * screen_height * 2);
+    fbp = (unsigned char*)malloc(screen_width * screen_height * 2);
 
     bcm_host_init();
 
@@ -40,14 +40,14 @@ int FBCP_process(void(*cb_func)(unsigned char* buff),int screen_width,int screen
     vc_dispmanx_rect_set(&rect1, 0, 0, screen_width, screen_height);
 
     while (1) {
-        ret = vc_dispmanx_snapshot(display, screen_resource, 0);
+      vc_dispmanx_snapshot(display, screen_resource, (DISPMANX_TRANSFORM_T)0);
         vc_dispmanx_resource_read_data(screen_resource, &rect1, fbp, screen_width * 16 / 8);
 	cb_func(fbp);
 
     }
 
     munmap(fbp, finfo.smem_len);
-    ret = vc_dispmanx_resource_delete(screen_resource);
+    vc_dispmanx_resource_delete(screen_resource);
     vc_dispmanx_display_close(display);
 }
 

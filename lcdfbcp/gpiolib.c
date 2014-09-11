@@ -1,15 +1,9 @@
 /*
-  OLED Control sample for SPI bus
-  This code is designed to work with Raspberry Pi and
-  OLED by aitendo(http://www.aitendo.com/product/2099)
-
-  Coded by Yasuhiro ISHII,4/15/2013
-
   This software is distributed under Apache 2.0 license
 
 
   memo:
-  D/C# : GPIO17(P1-09)
+
  */
 #include <stdio.h>
 #include <unistd.h>
@@ -38,7 +32,7 @@ bool gpiolib_setDataGpio17(bool level);
 #define GPIO_SET		*(gpio_mem+7)
 #define GPIO_CLR		*(gpio_mem+10)
 
-static volatile unsigned* gpio_mem = NULL;
+static volatile unsigned int* gpio_mem = NULL;
 
 bool gpiolib_init(void)
 {
@@ -49,7 +43,7 @@ bool gpiolib_init(void)
     if(memfd < 0){
 	printf("%s : memory open error\n",__func__);
     } else {
-	gpio_mem = mmap(NULL,BLOCK_SIZE,PROT_READ|PROT_WRITE,MAP_SHARED,memfd,GPIO_BASE);
+      gpio_mem = (volatile unsigned int*)mmap(NULL,BLOCK_SIZE,PROT_READ|PROT_WRITE,MAP_SHARED,memfd,GPIO_BASE);
 	close(memfd);
 	ret = true;
     }

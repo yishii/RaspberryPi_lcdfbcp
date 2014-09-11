@@ -91,7 +91,7 @@ int LCD_initial(void)
     fd = open("/dev/spidev0.0",O_RDWR);
     if(fd == -1){
 	printf("Device open error\n");
-	return;
+	return -1;
     }
 
     /*
@@ -100,34 +100,34 @@ int LCD_initial(void)
     result = ioctl(fd,SPI_IOC_WR_MODE,&mode);
     if(result < 0){
 	printf("error(L%d)\n",__LINE__);
-	return;
+	return -1;
     }
     result = ioctl(fd,SPI_IOC_RD_MODE,&mode);
     if(result < 0){
 	printf("error(L%d)\n",__LINE__);
-	return;
+	return -1;
     }
 
     result = ioctl(fd,SPI_IOC_WR_BITS_PER_WORD,&bits);
     if(result < 0){
 	printf("error(L%d)\n",__LINE__);
-	return;
+	return -1;
     }
     result = ioctl(fd,SPI_IOC_RD_BITS_PER_WORD,&bits);
     if(result < 0){
 	printf("error(L%d)\n",__LINE__);
-	return;
+	return -1;
     }
 
     result = ioctl(fd,SPI_IOC_WR_MAX_SPEED_HZ,&speed);
     if(result < 0){
 	printf("error(L%d)\n",__LINE__);
-	return;
+	return -1;
     }
     result = ioctl(fd,SPI_IOC_RD_MAX_SPEED_HZ,&speed);
     if(result < 0){
 	printf("error(L%d)\n",__LINE__);
-	return;
+	return -1;
     }
 
     lcd_controllerInitial(fd);
