@@ -14,8 +14,9 @@ CFLAGS		+= -I/opt/vc/include/interface/vmcs_host/linux
 CFLAGS		+= -I.
 CFLAGS		+= -I./lcd
 CFLAGS		+= -lbcm_host
-OBJS		 = lcdc.o gpiolib.o fbcp.o
+OBJS		 = main.o gpiolib.o fbcp.o
 OBJS		+= lcd/st7735.o
+OBJS		+= lcd/st7735r.o
 TARGET		 = lcdfbcp
 
 .PHONY: clean purge all
@@ -23,18 +24,20 @@ TARGET		 = lcdfbcp
 all:	$(TARGET)
 
 .c.o:
-	@echo "========================================================"
-	$(CC) $(CFLAGS) -c $<
+	@echo "Compile : " $<
+	@$(CC) $(CFLAGS) -c $<
 
 .cpp.o:
-	@echo "========================================================"
-	$(CC) $(CFLAGS) -c $<
+	@echo "Compile : " $<
+	@$(CC) $(CFLAGS) -c $<
 
 $(TARGET): $(OBJS)
-	$(CC) $(CFLAGS) -o $@ $(notdir $(OBJS))
+	@echo "Link : " $@
+	@$(CC) $(CFLAGS) -o $@ $(notdir $(OBJS))
+	@echo "lcdfbcp is now built and ready to execute!"
 
 clean:
-	@echo "Clean project =========================================="
+	@echo "Clean project"
 	rm -f *.bak $(TARGET) $(OBJS)
 
 purge:
@@ -42,6 +45,7 @@ purge:
 	rm -f ./lcd/*~
 
 install:
+	@echo "install program to /usr/bin"
 	install $(TARGET) /usr/bin
 
 depend: $(OBJS:.o=.c)

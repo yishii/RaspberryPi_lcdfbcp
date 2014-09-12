@@ -13,31 +13,36 @@
 #include <sys/mman.h>
 #include "gpiolib.h"
 #include "defgpio.h"
-#include "st7735.h"
+#include "st7735r.h"
 
-LCD_ST7735::LCD_ST7735()
+#define OFFSET_COLUMN 0
+#define OFFSET_ROW 1
+
+
+LCD_ST7735R::LCD_ST7735R()
 {
   printf("%s Enter\n",__func__);
+
   spi_initial();
   lcd_controllerInitial();
 }
 
-LCD_ST7735::~LCD_ST7735()
+LCD_ST7735R::~LCD_ST7735R()
 {
 
 }
 
-int LCD_ST7735::getLcdWidth()
+int LCD_ST7735R::getLcdWidth()
 {
   return LCD_WIDTH;
 }
 
-int LCD_ST7735::getLcdHeight()
+int LCD_ST7735R::getLcdHeight()
 {
   return LCD_HEIGHT;
 }
 
-void LCD_ST7735::lcd_writeData(unsigned char* buff,int len)
+void LCD_ST7735R::lcd_writeData(unsigned char* buff,int len)
 {
 #if 1
   int i;
@@ -62,19 +67,19 @@ void LCD_ST7735::lcd_writeData(unsigned char* buff,int len)
 #endif
 }
 
-void LCD_ST7735::lcd_command_write(unsigned char c)
+void LCD_ST7735R::lcd_command_write(unsigned char c)
 {
   gpiolib_setGpioData(GPIO_LCD_RS,false);
   write(spi_fd,&c,1);
 }
 
-void LCD_ST7735::lcd_data_write(unsigned char d)
+void LCD_ST7735R::lcd_data_write(unsigned char d)
 {
   gpiolib_setGpioData(GPIO_LCD_RS,true);
   write(spi_fd,&d,1);
 }
 
-bool LCD_ST7735::spi_initial(void)
+bool LCD_ST7735R::spi_initial(void)
 {
     int result;
     uint8_t mode = SPI_MODE_0;
@@ -140,13 +145,14 @@ bool LCD_ST7735::spi_initial(void)
 }
 
 
-void LCD_ST7735::lcd_controllerInitial()
+void LCD_ST7735R::lcd_controllerInitial()
 {
   int i;
   const struct lcd_init_data {
     bool cmd;
     unsigned char data;
   } lcd_init_data_table[] = {
+
     { true,	0xB1 },		// FRMCTR1
     { false,	0x01 },
     { false,	0x2C },
@@ -191,9 +197,9 @@ void LCD_ST7735::lcd_controllerInitial()
     { true,	0xC5 },		// VMCTR1
     { false,	0x0E },
 
-    { true,	0x36 },//MX, MY, RGB mode  p61
-    //    { false,	0xC8 }, // 1100 8000 my,mx,mv,ml,rgb,mh,0,0
-    { false,	0xA8 }, // mv my |  1010 8000 my,mx,mv,ml,rgb,mh,0,0
+    { true,	0x36 },         // MADCTL //MX, MY, RGB mode  p61
+    //{ false,	0xC8 }, // 1100 8000 my,mx,mv,ml,rgb,mh,0,0
+    { false,	0xa0/*0xA8*/ }, // mv my |  1010 8000 my,mx,mv,ml,rgb,mh,0,0
 
     { true,	0xe0 },		// GAMCTRP1
     { false,	0x02 },
@@ -233,19 +239,21 @@ void LCD_ST7735::lcd_controllerInitial()
 
     { true,	0x2a },		// CASET
     { false,	0x00 },
-    { false,	0x01 },
+    { false,	0x00 + OFFSET_COLUMN },
     { false,	0x00 },
-    { false,	0xA0 },
+    { false,   0xA0 + OFFSET_COLUMN},
 
     { true,	0x2b },		// RASET
     { false,	0x00 },
-    { false,	0x02 },
+    { false,	0x00 + OFFSET_ROW },
     { false,	0x00 },
-    { false,	0x81 },
+    { false,	0x80 + OFFSET_ROW },
 
     { true,	0x3A }, 
     { false,	0x05 },		// 16bit/pixel
     { true,	0x29 },
+
+
   };
 
   lcd_command_write((unsigned char)0x11);
@@ -261,19 +269,21 @@ void LCD_ST7735::lcd_controllerInitial()
   usleep(120*1000);
 }
 
-void LCD_ST7735::updateDisplay(unsigned char* buff)
+void LCD_ST7735R::updateDisplay(unsigned char* buff)
 {
   lcd_command_write((unsigned char)0x2C);
   lcd_data_write(0);
   lcd_writeData((unsigned char*)buff,LCD_HEIGHT*LCD_WIDTH*2);
 }
 
-bool LCD_ST7735::fillColor(unsigned char r,unsigned char g,unsigned char b)
+bool LCD_ST7735R::fillColor(unsigned char r,unsigned char g,unsigned char b)
 {
   int i;
   unsigned short buff[LCD_HEIGHT*LCD_WIDTH*2];
   unsigned short color;
-  color = r + g + b; // temp!!
+  color = (r & 0xf8) << 8 |
+    (g & 0xfc) << 3 |
+    (b & 0xf8) >> 3;
 
   for (i=0;i<sizeof(buff)/sizeof(unsigned short);i++){
     buff[i] = color;
