@@ -18,6 +18,16 @@ Author : Yasuhiro ISHII
 lf::respawn:/usr/bin/lcdfbcp
 
 
+2. プログラムの起動方法
+ root権限あり(sudo実行)でプログラムを実行します。
+ 例) $ sudo lcdfbcp &
+
+ LCDコントローラを指定する場合には、-mオプションを使用します。
+ 例1 : コントローラがST7735Bの場合)
+   $ sudo lcdfbcp -m st7735 &
+ 例2 : コントローラがST7735Rの場合)
+   $ sudo lcdfbcp -m st7735r &
+
 2. 解像度の変更方法
 
 デフォルトでは、LCD向けの縮小率の関係で文字が小さすぎて読めません。
