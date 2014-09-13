@@ -16,15 +16,14 @@
 #include "st7735r.h"
 
 #define OFFSET_COLUMN 0
-#define OFFSET_ROW 1
+#define OFFSET_ROW 0
 
 
 LCD_ST7735R::LCD_ST7735R()
 {
-  printf("%s Enter\n",__func__);
-
   spi_initial();
   lcd_controllerInitial();
+  printf("Initialized as ST7735R\n");
 }
 
 LCD_ST7735R::~LCD_ST7735R()

@@ -17,9 +17,9 @@
 
 LCD_ST7735::LCD_ST7735()
 {
-  printf("%s Enter\n",__func__);
   spi_initial();
   lcd_controllerInitial();
+  printf("Initialized as ST7735\n");
 }
 
 LCD_ST7735::~LCD_ST7735()
