@@ -48,7 +48,7 @@ install:
 	@echo "install program to /usr/bin"
 	install $(TARGET) /usr/bin
 
-depend: $(OBJS:.o=.c)
+depend: $(OBJS:.o=.cpp)
 	-@ makedepend -- $(CFLAGS) -- -Y $^ -f Makefile 2> /dev/null
 
 # DO NOT DELETE
