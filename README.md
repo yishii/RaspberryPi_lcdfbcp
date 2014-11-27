@@ -26,3 +26,13 @@ please add /etc/inittab to below: (recommended to add it at the beginning
 of this file)
 
 lf::respawn:/usr/bin/lcdfbcp
+
+For RaspberryPi Type B(Rev.1.0) users:
+===
+RaspberryPi Type B(Rev.1.0) is not officially supported with this program,but
+if you want to use this with it,please modify defgpio.h as described below:
+
+before) #define GPIO_LCD_RESET (27)
+after ) #define GPIO_LCD_RESET (21)
+
+Thanks
