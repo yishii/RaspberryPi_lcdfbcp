@@ -29,10 +29,14 @@ lf::respawn:/usr/bin/lcdfbcp
 
 For RaspberryPi Type B(Rev.1.0) users:
 ===
-RaspberryPi Type B(Rev.1.0) is not officially supported with this program,but
+RaspberryPi Type B(Rev.1.0) is still not officially supported with this program,but
 if you want to use this with it,please modify defgpio.h as described below:
 
+
 before) #define GPIO_LCD_RESET (27)
+
 after ) #define GPIO_LCD_RESET (21)
+
+This program will support Type B 1.0 in later release,sorry for inconvenience.
 
 Thanks
