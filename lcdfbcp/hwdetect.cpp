@@ -6,7 +6,7 @@
 bool isRaspberryPi2(void)
 {
   FILE* fp;
-  char buff[1024*32];
+  char buff[256];
   const char* raspberrypi2_device_name = "BCM2709";
   bool raspberrypi2 = false;
 
