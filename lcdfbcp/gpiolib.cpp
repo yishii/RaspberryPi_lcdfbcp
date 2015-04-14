@@ -18,13 +18,15 @@
 #include <stdbool.h>
 #include <sys/mman.h>
 #include "gpiolib.h"
+#include "hwdetect.h"
 
 bool gpiolib_init(void);
 bool gpiolib_setDirectionGpio17(bool in_xout);
 bool gpiolib_setDataGpio17(bool level);
 
-#define BCM2708_PERI_BASE	(0x20000000)
-#define GPIO_BASE		(BCM2708_PERI_BASE + 0x200000)
+#define BCM2835_PERI_BASE	(0x20000000)
+#define BCM2836_PERI_BASE	(0x3F000000)
+#define GPIO_OFFSET		(0x00200000)
 #define BLOCK_SIZE		(1024*4)
 
 #define INP_GPIO(g)		*(gpio_mem+((g)/10)) &= ~(7<<(((g)%10)*3))
@@ -38,12 +40,22 @@ bool gpiolib_init(void)
 {
     int memfd;
     bool ret = false;
+    int gpio_base_address;
+
+    printf("Detected hardware : ");
+    if(isRaspberryPi2()){
+      gpio_base_address = BCM2836_PERI_BASE + GPIO_OFFSET;
+      printf("RaspberryPi2\n");
+    } else {
+      gpio_base_address = BCM2835_PERI_BASE + GPIO_OFFSET;
+      printf("RaspberryPi\n");
+    }
 
     memfd = open("/dev/mem",O_RDWR|O_SYNC);
     if(memfd < 0){
 	printf("%s : memory open error\n",__func__);
     } else {
-      gpio_mem = (volatile unsigned*)mmap(NULL,BLOCK_SIZE,PROT_READ|PROT_WRITE,MAP_SHARED,memfd,GPIO_BASE);
+      gpio_mem = (volatile unsigned*)mmap(NULL,BLOCK_SIZE,PROT_READ|PROT_WRITE,MAP_SHARED,memfd,gpio_base_address);
 	close(memfd);
 	ret = true;
     }
