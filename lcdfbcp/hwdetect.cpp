@@ -8,17 +8,23 @@ bool isRaspberryPi2(void)
   FILE* fp;
   char buff[256];
   const char* raspberrypi2_device_name = "BCM2709";
-  bool raspberrypi2 = false;
+  const char* raspberrypi3_device_name = "BCM2835";
+  bool newraspberrypi = false;
 
   fp = fopen("/proc/cpuinfo","r");
   while(fgets(buff,sizeof(buff),fp) != NULL){
     if(strstr(buff,raspberrypi2_device_name) != NULL){
-      raspberrypi2 = true;
+      newraspberrypi = true;
+    }
+    if(strstr(buff,raspberrypi3_device_name) != NULL){
+      newraspberrypi = true;
     }
   }
   fclose(fp);
 
-  return raspberrypi2;
+  //printf("RasPiDetect : %s                ", newraspberrypi ? "True" : "False");
+
+  return newraspberrypi;
 }
 
   
